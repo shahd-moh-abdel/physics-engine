@@ -1,4 +1,4 @@
-// Physics Engine Code (previous code goes here)
+//hope you like it 
 class Vector2D {
   constructor(x, y) {
     this.x = x;
@@ -67,7 +67,8 @@ class PhysicsEngine {
   }
 
   updateGravity(x, y) {
-    this.gravity = new Vector2D(x, y);
+    const magnitude = 500; // Adjust this value to change the strength of gravity
+    this.gravity = new Vector2D(x * magnitude, y * magnitude);
   }
 
   addObject(object) {
@@ -203,12 +204,26 @@ class InteractivePhysicsSimulation {
     this.draggedObject = null;
     this.dragOffset = new Vector2D(0, 0);
 
-    this.setupEventListeners();
+    window.addEventListener("load", () => this.setupOrientationListener());
     this.createInitialObjects();
   }
 
-  setupOrientationListener() {
-    if (window.DeviceOrientationEvent) {
+  requestOrientationPermission() {
+    if (
+      typeof DeviceOrientationEvent !== "undefined" &&
+      typeof DeviceOrientationEvent.requestPermission === "function"
+    ) {
+      DeviceOrientationEvent.requestPermission()
+        .then((permissionState) => {
+          if (permissionState === "granted") {
+            window.addEventListener(
+              "deviceorientation",
+              this.handleOrientation.bind(this)
+            );
+          }
+        })
+        .catch(console.error);
+    } else {
       window.addEventListener(
         "deviceorientation",
         this.handleOrientation.bind(this)
@@ -216,9 +231,25 @@ class InteractivePhysicsSimulation {
     }
   }
 
+  setupOrientationListener() {
+    if (window.DeviceOrientationEvent) {
+      // Create a button to request permission and start orientation listening
+      const button = document.createElement("button");
+      button.textContent = "Enable device orientation";
+      button.style.position = "absolute";
+      button.style.zIndex = "1000";
+      document.body.appendChild(button);
+
+      button.addEventListener("click", () => {
+        this.requestOrientationPermission();
+        button.remove();
+      });
+    }
+  }
+
   handleOrientation(event) {
-    const x = ((event.gamma / 90) * this.engine.width) / 2; // -90 to 90
-    const y = ((event.beta / 90) * this.engine.height) / 2; // -180 to 180
+    const x = event.gamma ? event.gamma / 90 : 0; // Convert to range [-1, 1]
+    const y = event.beta ? (event.beta - 45) / 90 : 0; // Convert to range [-1, 1], 45 degrees is neutral
     this.engine.updateGravity(x, y);
   }
 
