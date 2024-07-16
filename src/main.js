@@ -233,16 +233,7 @@ class InteractivePhysicsSimulation {
 
   setupOrientationListener() {
     if (window.DeviceOrientationEvent) {
-      // Create a button to request permission and start orientation listening
-      const button = document.createElement("button");
-      button.textContent = "Enable device orientation";
-      button.style.position = "absolute";
-      button.style.zIndex = "1000";
-      document.body.appendChild(button);
-
-      button.addEventListener("click", () => {
-        this.requestOrientationPermission();
-        button.remove();
+        //this.requestOrientationPermission();
       });
     }
   }
