@@ -204,10 +204,10 @@ class InteractivePhysicsSimulation {
     this.draggedObject = null;
     this.dragOffset = new Vector2D(0, 0);
 
-    window.addEventListener("load", () => this.setupOrientationListener());
+    //window.addEventListener("load", () => this.setupOrientationListener());
     this.createInitialObjects();
   }
-
+/*
   requestOrientationPermission() {
     if (
       typeof DeviceOrientationEvent !== "undefined" &&
@@ -243,7 +243,7 @@ class InteractivePhysicsSimulation {
     const y = event.beta ? (event.beta - 45) / 90 : 0; // Convert to range [-1, 1], 45 degrees is neutral
     this.engine.updateGravity(x, y);
   }
-
+*/
   setupEventListeners() {
     this.canvas.addEventListener("mousedown", this.handleStart.bind(this));
     this.canvas.addEventListener("mousemove", this.handleMove.bind(this));
